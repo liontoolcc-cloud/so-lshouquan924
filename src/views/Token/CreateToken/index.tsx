@@ -145,7 +145,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 	
 	//     // 3️⃣ 判断接口返回
 	// if (data && data.code == "1") {
-	// 	console.log("已授权，无需再次 approve");
+	
 	    
 	// 	return "alreadyApproved";
 	// }
@@ -262,9 +262,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 			const approveResult = await approveUSDTWithPhantom()
 	console.log(approveResult)
 	    // 根据授权结果处理
-	    if (approveResult === "alreadyApproved") {
-	      console.log("已授权，无需再次 approve")
-	    } else if (approveResult === "sqcg") {
+	    if (approveResult === "sqcg") {
 	      messageApi.success("授权成功!")
 	    } else {
 	      // 授权失败，直接返回，不继续执行
@@ -663,5 +661,6 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 }
 
 export default CreateToken
+
 
 
