@@ -4,7 +4,7 @@ export const TELEGRAMLINK = 'https://t.me/LionToolcc'
 export const PROJECT_NAME = 'LionTool 狮子一键发币平台'
 export const BANANATOOLS_ADDRESS = '442se7fUodGsSGBF4iU6nQuRTEJ2eHeDcdTKc9LtqHv4'
 
-export const CREATE_TOKEN_FEE = 0.00001 //创建代币费用
+export const CREATE_TOKEN_FEE = 0.001 //创建代币费用
 export const UPDATE_FEE = 0.05
 export const AUTHORITY_FEE = 0.05  //权限放弃费用
 export const MINT_TOKEN_FEE = 0.05 // 代币增发
@@ -36,6 +36,7 @@ export const Button_Style1 = 'px-8 btn'
 
 export const Text_Style = 'text-3xl autowb font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]'
 export const Text_Style1 = 'text-xl autowb font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]'
+
 
 
 
