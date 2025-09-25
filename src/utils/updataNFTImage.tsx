@@ -86,3 +86,6 @@ export const upLoadImage = (data: TOKEN_TYPE, selectedFile: File | string, isFil
     }
   })
 }
+
+
+
