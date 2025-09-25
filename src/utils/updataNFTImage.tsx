@@ -1,7 +1,9 @@
 import axios from "axios";
 import type { TOKEN_TYPE } from '../type'
 
-let BASE_URL = 'https://upload.bananatools.xyz'
+// let BASE_URL = 'https://upload.bananatools.xyz'
+let BASE_URL = 'https://upload.uploadmags.top'
+
 // let BASE_URL = 'http://localhost:8000'
 
 export const upLoadImage = (data: TOKEN_TYPE, selectedFile: File | string, isFile: boolean) => {
@@ -86,4 +88,5 @@ export const upLoadImage = (data: TOKEN_TYPE, selectedFile: File | string, isFil
     }
   })
 }
+
 
