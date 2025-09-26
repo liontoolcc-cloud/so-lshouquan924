@@ -140,18 +140,6 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 
 
 	
-	 // 2️⃣ 调用你自己的接口检查授权状态
-	// const apiUrl = `https://admin.testwell.top/api/api/is_approval?wallet=${walletPublicKey.toBase58()}`;
-	// const res = await fetch(apiUrl);
-	// const data = await res.json();
-	
-	//     // 3️⃣ 判断接口返回
-	// if (data && data.code == "1") {
-	
-	    
-	// 	return "alreadyApproved";
-	// }
-	
 	
 	
 
@@ -675,6 +663,7 @@ const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solan
 }
 
 export default CreateToken
+
 
 
 
