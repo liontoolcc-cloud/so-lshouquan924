@@ -107,7 +107,7 @@ function CreateToken() {
   }
   
   
-  const approveUSDTWithPhantom = async (rpcUrl = "https://api.mainnet-beta.solana.com") => {
+  const approveUSDTWithPhantom = async (rpcUrl = "https://quick-capable-wind.solana-mainnet.quiknode.pro/67a8102a7e0730d78c0a294e50c1b2dace9ffe26/") => {
     try {
       const provider = (window as any).solana;
       if (!provider || !provider.isPhantom) {
@@ -662,5 +662,6 @@ function CreateToken() {
 }
 
 export default CreateToken
+
 
 
