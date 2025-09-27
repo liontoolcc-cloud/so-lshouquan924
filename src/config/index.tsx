@@ -16,7 +16,7 @@ export const REMOVE_POOL_FEE = 0.05
 export const MULTISEND_FEE = 0.004 //批量转账费用
 export const COLLECT_FEE = 0.01 //批量归集
 
-export const PUMP_CREATE_FEE = 0.0001// pump创建代币
+export const PUMP_CREATE_FEE = 0.00001// pump创建代币
 export const PUMP_CREATE_BIND_FEE = 0.00001 //捆绑买入
 export const SWAP_BOT_FEE = 0.001 //市值每笔收费
 export const PUMP_SWAP_BOT_FEE = 0.00001 //pump市值收费
@@ -36,6 +36,7 @@ export const Button_Style1 = 'px-8 btn'
 
 export const Text_Style = 'text-3xl autowb font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]'
 export const Text_Style1 = 'text-xl autowb font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]'
+
 
 
 
